@@ -1,14 +1,16 @@
 const express = require('express');
+const Promotion = require('../models/promotion');
 const promotionRouter = express.Router();
 
 promotionRouter.route('/')
-.all((req, res, next) => {
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain');
-    next();
-})
-.get((req, res) => {
-    res.end('Will send all the promotions to you');
+.get((req, res, next) => {
+    Promotion.find()
+    .then(promotions => {
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.json(promotions);
+    })
+    .catch(err => next(err));
 })
 .post((req, res) => {
     res.end(`Will add the promotion: ${req.body.name} with description: ${req.body.description}`);
